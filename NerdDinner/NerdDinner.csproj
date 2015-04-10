@@ -189,6 +189,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\PaginatedList.cs" />
     <Compile Include="Migrations\201504091800549_Initial.cs" />
     <Compile Include="Migrations\201504091800549_Initial.Designer.cs">
       <DependentUpon>201504091800549_Initial.cs</DependentUpon>
@@ -196,7 +197,6 @@
     <Compile Include="Migrations\EntityFrameworkConfiguration.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\Dinner.cs" />
-    <Compile Include="Models\DinnerRepository.cs" />
     <Compile Include="Models\Rsvp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DotNetOpenAuth.OpenId.Extensions.AttributeExchange;
+using NerdDinner.Helpers;
 using NerdDinner.Models;
 
 namespace NerdDinner.Controllers
@@ -19,10 +20,24 @@ namespace NerdDinner.Controllers
         private DinnersDbContext db = new DinnersDbContext();
 
 
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
-            var dinners = db.Dinners.ToList();
-            return View(dinners);
+            const int pageSize = 10;
+
+            IQueryable<Dinner> upcomingDinners = from dinner in db.Dinners
+                                            //  where dinner.EventDate > DateTime.Now
+                                                orderby dinner.EventDate
+                                                select dinner;
+
+/*
+            var paginatedDinners = upcomingDinners.Skip((page ?? 0) * pageSize)
+                .Take(20)
+                .ToList();
+*/
+
+            var paginatedDinners = new PaginatedList<Dinner>(upcomingDinners, page ?? 0, pageSize);
+
+            return View(paginatedDinners);
         }
 
 
@@ -64,6 +79,14 @@ namespace NerdDinner.Controllers
 
         public ActionResult Create()
         {
+
+            var countries = new List<string>();
+            countries.Add("America");
+            countries.Add("Australia");
+            countries.Add("Austria");
+
+            ViewData["Countries"] = new SelectList(countries);
+
             Dinner dinner = new Dinner()
             {
                 EventDate = DateTime.Now.AddDays(7)
