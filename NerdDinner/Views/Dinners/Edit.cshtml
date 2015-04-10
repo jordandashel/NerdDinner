@@ -1,0 +1,18 @@
+﻿@using System.Collections.Concurrent
+@model NerdDinner.Models.Dinner
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@Html.RenderPartial("DinnerForm")
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

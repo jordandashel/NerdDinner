@@ -1,0 +1,61 @@
+﻿@model NerdDinner.Models.Dinner
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+
+    <h3>Dinner</h3>
+    <hr/>
+    <dl>
+        <dt>
+            <strong>@Html.DisplayNameFor(model => model.Title)</strong>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            <strong>@Html.DisplayNameFor(model => model.EventDate)</strong>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EventDate)
+        </dd>
+
+        <dt>
+            <strong>@Html.DisplayNameFor(model => model.Address)</strong>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+
+        <dt>
+            <strong>@Html.DisplayNameFor(model => model.Description)</strong>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            <strong>@Html.DisplayNameFor(model => model.HostedBy)</strong>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HostedBy)
+        </dd>
+    </dl>
+
+</div>
+
+
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.DinnerId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
