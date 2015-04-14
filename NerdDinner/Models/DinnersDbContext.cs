@@ -1,7 +1,8 @@
 using System;
 using System.Data.Entity;
-using System.Data.Objects.DataClasses;
+using System.Data.Entity.Core.Objects.DataClasses;
 using System.Linq;
+using CodeFirstStoreFunctions;
 
 namespace NerdDinner.Models
 {
@@ -10,7 +11,14 @@ namespace NerdDinner.Models
         public DbSet<Dinner> Dinners { get; set; }
         public DbSet<Rsvp> Rsvps { get; set; }
 
-        [EdmFunction("NerdDinnerModel.Store", "DistanceBetween")]
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Conventions.Add(new FunctionsConvention<DinnersDbContext>("dbo"));
+        }
+
+        [DbFunction("CodeFirstDatabaseSchema", "DistanceBetween")]
         public static double DistanceBetween(double lat1, double long1, double lat2, double long2)
         {
             throw new NotImplementedException("Only call through LINQ expression");

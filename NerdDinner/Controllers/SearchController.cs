@@ -41,7 +41,8 @@ namespace NerdDinner.Controllers
                     RsvpCount = dinner.Rsvps.Count
                 };
 
-            return Json(jsonDinners.ToList());
+            var results = jsonDinners.ToList();
+            return Json(results);
         }
     }
 }
