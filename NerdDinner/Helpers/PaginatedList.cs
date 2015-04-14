@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using NerdDinner.Models;
 
 namespace NerdDinner.Helpers
 {
-    public class PaginatedList<T> : List<Dinner>
+    public class PaginatedList<T> : List<T>
     {
+
         public int PageIndex { get; private set; }
         public int PageSize { get; private set; }
         public int TotalCount { get; private set; }
         public int TotalPages { get; private set; }
-        public List<Dinner> Dinners { get; set; }
 
-        public PaginatedList(IQueryable<Dinner> source, int pageIndex, int pageSize)
+        public PaginatedList(IQueryable<T> source, int pageIndex, int pageSize)
         {
-            Dinners = source.ToList();
             PageIndex = pageIndex;
             PageSize = pageSize;
             TotalCount = source.Count();

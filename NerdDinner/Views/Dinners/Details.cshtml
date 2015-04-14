@@ -1,4 +1,7 @@
-﻿@model NerdDinner.Models.Dinner
+﻿@using System.Diagnostics.Eventing.Reader
+@using System.Web.Http.OData.Builder
+@using NerdDinner.Controllers
+@model NerdDinner.Models.Dinner
 
 @{
     ViewBag.Title = "Details";
@@ -55,7 +58,61 @@
 </div>
 
 
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id=Model.DinnerId }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+
+@Html.Partial("_Map", Model)
+
+
+
+<div id="rsvpmsg">
+@if (Request.IsAuthenticated)
+{
+     if (Model.IsUserRegistered(Context.User.Identity.Name))
+     {
+         <p id="rsvp" class="text-danger">You are registered for this event!</p>
+     }
+     else
+     {
+         <p id="rsvp">
+             <button id="rsvp-for-event" href="#" data-dinner-id="@Model.DinnerId">RSVP for this event!</button>
+         </p>
+     }
+}
+else
+{
+    <p class="text-danger"><a href="~/Account/Login">Login</a> to RSVP for this event.</p>
+}
+</div>
+
+
+@if (Model.IsHostedBy(User.Identity.Name))
+{
+    <p>
+        @Html.ActionLink("Edit", "Edit", new {id = Model.DinnerId}) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}
+
+@section scripts {
+
+    @if (!Model.IsUserRegistered(Context.User.Identity.Name))
+    {
+        <script type="text/javascript">
+            $(function() {
+
+                $("#rsvp-for-event").click(function() {
+                    var id = $("#rsvp-for-event").data("dinner-id");
+                    $.post("/Rsvp/Register/" + id)
+                        .done(function() {
+                            $("#rsvp").html("You are registered for this event!");
+                            $("#rsvp").addClass("text-danger");
+                            $("#rsvp").animate({ fontSize: "1.5em" }, 400);
+                        })
+                        .fail(function() {
+                            alert("Oop! Something went wrong trying to rsvp! Try again later please.");
+                        });
+                });
+            });
+        </script>
+    }
+
+}

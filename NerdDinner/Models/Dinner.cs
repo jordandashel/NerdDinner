@@ -43,7 +43,17 @@ namespace NerdDinner.Models
 
         public float Latitude { get; set; }
         public float Longitude { get; set; }
-        public virtual IList<Rsvp> Rsvps { get; set; } 
+        public virtual IList<Rsvp> Rsvps { get; set; }
+
+        public bool IsHostedBy(string userName)
+        {
+            return HostedBy.Equals(userName, StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public bool IsUserRegistered(string userName)
+        {
+            return Rsvps.Any(r => r.AttendeeName.Equals(userName, StringComparison.InvariantCultureIgnoreCase));
+        }
     }
 
     public class DinnersDbContext : DbContext

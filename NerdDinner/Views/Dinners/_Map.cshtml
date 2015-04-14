@@ -1,0 +1,24 @@
+﻿<script src="http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2"></script>
+<script src="/Scripts/Map.js"></script>
+
+<div id="theMap" style="position:relative; width:400px; height:400px;"></div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var latitude = @Model.Latitude;
+        var longitude = @Model.Longitude;
+
+        if ((latitude == 0) || (longitude == 0))
+            LoadMap();
+        else
+            LoadMap(latitude, longitude, mapLoaded);
+    });
+ 
+    function mapLoaded() {
+        var title = "@Html.Encode(Model.Title)";
+        var address = "@Html.Encode(Model.Address)";
+ 
+        LoadPin(center, title, address);
+        map.SetZoomLevel(14);
+    }
+</script>

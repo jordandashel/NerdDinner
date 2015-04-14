@@ -7,7 +7,7 @@
 <h2>Upcoming Dinners</h2>
 
 <ul>
-    @foreach (var dinner in Model.Dinners)
+    @foreach (var dinner in Model)
     {
         <li>
             @Html.ActionLink(dinner.Title, "Details", new {id = dinner.DinnerId})
