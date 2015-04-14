@@ -29,12 +29,6 @@ namespace NerdDinner.Controllers
                                                 orderby dinner.EventDate
                                                 select dinner;
 
-/*
-            var paginatedDinners = upcomingDinners.Skip((page ?? 0) * pageSize)
-                .Take(20)
-                .ToList();
-*/
-
             var paginatedDinners = new PaginatedList<Dinner>(upcomingDinners, page ?? 0, pageSize);
 
             return View(paginatedDinners);

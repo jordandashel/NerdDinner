@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Data.Entity;
 using System.Linq;
 using System.Web;
+using System.Web.Helpers;
 
 namespace NerdDinner.Models
 {
@@ -54,11 +54,5 @@ namespace NerdDinner.Models
         {
             return Rsvps.Any(r => r.AttendeeName.Equals(userName, StringComparison.InvariantCultureIgnoreCase));
         }
-    }
-
-    public class DinnersDbContext : DbContext
-    {
-        public DbSet<Dinner> Dinners { get; set; }
-        public DbSet<Rsvp> Rsvps { get; set; }
     }
 }
