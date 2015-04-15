@@ -51,6 +51,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Moq">
+      <HintPath>..\packages\Moq.4.2.1502.0911\lib\net40\Moq.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Linq" />
@@ -205,8 +208,12 @@
     </Compile>
     <Compile Include="Migrations\EntityFrameworkConfiguration.cs" />
     <Compile Include="Models\AccountModels.cs" />
+    <Compile Include="Controllers\DinnerFormViewModel.cs" />
+    <Compile Include="Models\DinnerPartial.cs" />
     <Compile Include="Models\Dinner.cs" />
+    <Compile Include="Models\DinnerRepository.cs" />
     <Compile Include="Models\DinnersDbContext.cs" />
+    <Compile Include="Models\IDinnerRepository.cs" />
     <Compile Include="Models\Rsvp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

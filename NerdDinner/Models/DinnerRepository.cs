@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
+using CodeFirstStoreFunctions;
 
 namespace NerdDinner.Models
 {
-    public class DinnerRepository
+    public class DinnerRepository : IDinnerRepository
     {
         private DinnersDbContext db = new DinnersDbContext();
 
@@ -20,15 +22,14 @@ namespace NerdDinner.Models
         public IQueryable<Dinner> FindUpcomingDinners()
         {
             return from dinner in db.Dinners
-                   where dinner.EventDate > DateTime.Now
+                   //where dinner.EventDate > DateTime.Now
                    orderby dinner.EventDate
                    select dinner;
         }
 
         public Dinner GetDinner(int id)
         {
-            var result = db.Dinners.SingleOrDefault(d => d.DinnerId == id);
-           return result;
+            return db.Dinners.SingleOrDefault(d => d.DinnerId == id);
         }
 
         //
@@ -37,18 +38,13 @@ namespace NerdDinner.Models
         public void Add(Dinner dinner)
         {
             db.Dinners.Add(dinner);
-            db.SaveChanges();
-            //db.Dinners.InsertOnSubmit(dinner);
+            Save();
         }
 
         public void Delete(Dinner dinner)
-        {           
-            dinner.Rsvps.Clear();
+        {
             db.Dinners.Remove(dinner);
-            db.SaveChanges();
-
-//            db.Rsvps.DeleteAllOnSubmit(dinner.RSVPs);
-//            db.Dinners.DeleteOnSubmit(dinner);
+            Save();
         }
 
         //
@@ -57,7 +53,20 @@ namespace NerdDinner.Models
         public void Save()
         {
             db.SaveChanges();
-            //db.SubmitChanges();
         }
+
+        public IQueryable<Dinner> FindByLocation(float latitude, float longitude)
+        {
+            var upcomingDinners = from dinner in db.Dinners
+                                  //  where dinner.EventDate > DateTime.Now
+                                  orderby dinner.EventDate
+                                  select dinner;
+
+            var dinners = from dinner in upcomingDinners
+                          join i in db.NearestDinners(latitude, longitude) on dinner.DinnerId equals i.DinnerId
+                          select dinner;
+
+            return dinners;
+        } 
     }
 }

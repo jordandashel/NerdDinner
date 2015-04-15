@@ -17,17 +17,23 @@ namespace NerdDinner.Controllers
         //
         // GET: /Dinners/
 
-        private DinnersDbContext db = new DinnersDbContext();
+        private IDinnerRepository dinnerRepository;
 
+        public DinnersController()
+        {
+            dinnerRepository = new DinnerRepository();
+        }
+
+        public DinnersController(IDinnerRepository repository)
+        {
+            dinnerRepository = repository;
+        }
 
         public ActionResult Index(int? page)
         {
             const int pageSize = 10;
 
-            IQueryable<Dinner> upcomingDinners = from dinner in db.Dinners
-                                            //  where dinner.EventDate > DateTime.Now
-                                                orderby dinner.EventDate
-                                                select dinner;
+            IQueryable<Dinner> upcomingDinners = dinnerRepository.FindUpcomingDinners();
 
             var paginatedDinners = new PaginatedList<Dinner>(upcomingDinners, page ?? 0, pageSize);
 
@@ -37,7 +43,7 @@ namespace NerdDinner.Controllers
 
         public ActionResult Details(int id)
         {
-            Dinner dinner = db.Dinners.Find(id);
+            Dinner dinner = dinnerRepository.GetDinner(id);
             
             return dinner == null ? View("NotFound") : View("Details", dinner);
         }
@@ -45,7 +51,7 @@ namespace NerdDinner.Controllers
         [Authorize]
         public ActionResult Edit(int id)
         {
-            Dinner dinner = db.Dinners.Find(id);
+            Dinner dinner = dinnerRepository.GetDinner(id);
 
 
             if (!dinner.IsHostedBy(User.Identity.Name))
@@ -58,7 +64,7 @@ namespace NerdDinner.Controllers
 
             ViewData["Countries"] = new SelectList(countries);
 
-            return View(dinner);
+            return View(new DinnerFormViewModel(dinner));
         }
 
         [Authorize]
@@ -66,7 +72,7 @@ namespace NerdDinner.Controllers
         public ActionResult Edit(int id, FormCollection formValues)
         {
             // Retrieve existing dinner
-            Dinner dinner = db.Dinners.Find(id);
+            Dinner dinner = dinnerRepository.GetDinner(id);
 
             if (!dinner.IsHostedBy(User.Identity.Name))
             {
@@ -75,7 +81,7 @@ namespace NerdDinner.Controllers
             UpdateModel(dinner);
 
             // Persist changes back to database
-            db.SaveChanges();
+            dinnerRepository.Save();
 
             // Perform HTTP redirect to details page for the saved Dinner
             return RedirectToAction("Details", new { id = dinner.DinnerId });
@@ -97,7 +103,7 @@ namespace NerdDinner.Controllers
                 EventDate = DateTime.Now.AddDays(7)
             };
 
-            return View(dinner);
+            return View(new DinnerFormViewModel(dinner));
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
@@ -113,17 +119,17 @@ namespace NerdDinner.Controllers
                 rsvp.AttendeeName = User.Identity.Name;
                 dinner.Rsvps.Add(rsvp);
 
-                db.Dinners.Add(dinner);
-                db.SaveChanges();
+                dinnerRepository.Add(dinner);
+                dinnerRepository.Save();
                 return RedirectToAction("Index");
             }
 
-            return View(dinner);
+            return View(new DinnerFormViewModel(dinner));
         }
 
         public ActionResult Delete(int id)
         {
-            Dinner dinner = db.Dinners.Find(id);
+            Dinner dinner = dinnerRepository.GetDinner(id);
 
             if (dinner == null)
                 return View("NotFound");
@@ -138,7 +144,7 @@ namespace NerdDinner.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult Delete(int id, string confirmButton)
         {
-            Dinner dinner = db.Dinners.Find(id);
+            Dinner dinner = dinnerRepository.GetDinner(id);
    
             if (dinner == null)
                 return View("NotFound");
@@ -146,8 +152,8 @@ namespace NerdDinner.Controllers
             if (!dinner.IsHostedBy(User.Identity.Name))
                 return View("InvalidOwner");
             
-            db.Dinners.Remove(dinner);
-            db.SaveChanges();
+            dinnerRepository.Delete(dinner);
+            dinnerRepository.Save();
 
             return View("Deleted");
         }

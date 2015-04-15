@@ -7,7 +7,7 @@ using System.Web.Helpers;
 
 namespace NerdDinner.Models
 {
-    public class Dinner
+    public partial class Dinner
     {
         [Key]
         public int DinnerId { get; set; }
